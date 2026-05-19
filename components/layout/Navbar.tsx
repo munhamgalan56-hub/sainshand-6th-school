@@ -36,9 +36,9 @@ export default function Navbar() {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontFamily: 'Playfair Display, serif', fontSize: 18, fontWeight: 700, color: '#b49eff',
           }}>6</div>
-          <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: '#fff', lineHeight: 1.3 }}>ЕРӨНХИЙ БОЛОВСРОЛЫН 6-Р СУРГУУЛЬ</div>
-            <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.5)', letterSpacing: '1px', textTransform: 'uppercase' }}>Дорноговь аймаг, Сайншанд сум</div>
+          <div className="logo-text">
+            <div className="logo-title" style={{ fontWeight: 600, color: '#fff', lineHeight: 1.3 }}>ЕРӨНХИЙ БОЛОВСРОЛЫН 6-Р СУРГУУЛЬ</div>
+            <div className="logo-subtitle" style={{ color: 'rgba(255,255,255,0.5)', letterSpacing: '1px', textTransform: 'uppercase' }}>Дорноговь аймаг, Сайншанд сум</div>
           </div>
         </Link>
 
@@ -118,12 +118,18 @@ export default function Navbar() {
 
       {/* Responsive CSS */}
       <style>{`
+        /* Компьютер болон том дэлгэц дээр */
+        .logo-title { font-size: 13px; }
+        .logo-subtitle { font-size: 9px; }
+
+        /* Утасны дэлгэц дээр (768px болон түүнээс бага) */
         @media (max-width: 768px) {
           .desktop-nav { display: none !important; }
           .hamburger { display: flex !important; }
-        }
-        @media (min-width: 769px) {
-          .mobile-nav { display: none !important; }
+          
+          /* Логоны текстийг утас дээр жижигсгэж чихэгдэхээс хамгаална */
+          .logo-title { font-size: 11px !important; }
+          .logo-subtitle { font-size: 8px !important; }
         }
       `}</style>
     </header>

@@ -60,7 +60,13 @@ export default function HeroSection() {
         }
         @media (max-width: 480px) {
           .hero-stats {
-            gap: 20px;
+            gap: 16px;
+            justify-content: space-between;
+          }
+          .hero-stats > div {
+            flex: 1;
+            min-width: 80px;
+            text-align: left;
           }
         }
       `}</style>
