@@ -25,18 +25,16 @@ const levels = [
   },
 ]
 
-
-
 export default function FeaturesSection() {
   return (
-    <section id="features" style={{ position: 'relative', zIndex: 1, maxWidth: 1200, margin: '0 auto', padding: '0 32px 80px' }}>
-      {/* School levels */}
+    <section id="features" style={{ position: 'relative', zIndex: 1, maxWidth: 1200, margin: '0 auto', padding: '0 20px 80px' }}>
       <div style={{ marginBottom: 52 }}>
         <div style={{ fontSize: 11, letterSpacing: '1.5px', textTransform: 'uppercase', color: '#b49eff', fontWeight: 500, marginBottom: 12 }}>Сургалтын түвшин</div>
-        <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 700, marginBottom: 16 }}>Бага · Дунд · Ахлах</h2>
+        <h2 style={{ fontFamily: 'Playfair Display, serif', fontSize: 'clamp(24px, 4vw, 40px)', fontWeight: 700, marginBottom: 16 }}>Бага · Дунд · Ахлах</h2>
         <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.6)', maxWidth: 500, lineHeight: 1.7 }}>1-р ангиас 12-р анги хүртэл тасралтгүй, чанартай боловсрол олгодог.</p>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 48 }}>
+
+      <div className="features-grid">
         {levels.map(l => (
           <div key={l.title} style={{ background: l.color, backdropFilter: 'blur(20px)', border: `0.5px solid ${l.border}`, borderRadius: 16, padding: 28 }}>
             <div style={{ fontSize: 32, marginBottom: 12 }}>{l.icon}</div>
@@ -47,7 +45,19 @@ export default function FeaturesSection() {
         ))}
       </div>
 
-      
+      <style>{`
+        .features-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 16px;
+          margin-bottom: 48px;
+        }
+        @media (max-width: 768px) {
+          .features-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
     </section>
   )
 }
