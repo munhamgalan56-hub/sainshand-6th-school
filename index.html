@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Эрдэм Сургууль</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+
+  <style>
+    /* ─── Reset & Base ─── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --purple: #7850ff;
+      --purple-light: #b49eff;
+      --teal: #00c8b4;
+      --teal-light: #00e5cd;
+      --amber: #ffb700;
+      --bg-dark: #07091e;
+      --glass-bg: rgba(255,255,255,0.055);
+      --glass-border: rgba(255,255,255,0.11);
+      --text-main: #ffffff;
+      --text-muted: rgba(255,255,255,0.5);
+      --text-dim: rgba(255,255,255,0.35);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    /* ─── Background Orbs ─── */
+    .bg-scene {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      overflow: hidden;
+    }
+    .orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(80px); opacity: 0.55;
+    }
+    .orb-1 { width: 600px; height: 600px; background: radial-gradient(circle, #4a28cc, transparent 70%); top: -160px; right: -140px; }
+    .orb-2 { width: 500px; height: 500px; background: radial-gradient(circle, #00c8b4, transparent 70%); bottom: -120px; left: -120px; }
+    .orb-3 { width: 350px; height: 350px; background: radial-gradient(circle, #7850ff44, transparent 70%); top: 40%; left: 35%; }
+
+    /* ─── Glassmorphism card mixin ─── */
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 0.5px solid var(--glass-border);
+      border-radius: 16px;
+    }
+
+    /* ─────────────────────────────
+       NAV
+    ───────────────────────────── */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(7,9,30,0.6);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 0.5px solid var(--glass-border);
+    }
+
+    nav {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 32px;
+      height: 68px;
+      display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    }
+
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .logo-mark {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--purple), var(--teal));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 18px; font-weight: 700; color: #fff;
+      flex-shrink: 0;
+    }
+    .logo-name { font-size: 16px; font-weight: 500; color: #fff; line-height: 1.2; }
+    .logo-tagline { font-size: 10px; color: var(--text-muted); letter-spacing: 1.2px; text-transform: uppercase; }
+
+    .nav-links {
+      display: flex; align-items: center; gap: 4px;
+      list-style: none;
+    }
+    .nav-links a {
+      display: block;
+      padding: 8px 14px;
+      font-size: 14px; font-weight: 400;
+      color: var(--text-muted); text-decoration: none;
+      border-radius: 8px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .nav-links a:hover,
+    .nav-links a.active { color: #fff; background: rgba(255,255,255,0.07); }
+
+    .nav-cta {
+      padding: 10px 22px; border-radius: 10px;
+      background: var(--purple);
+      border: none; color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px; font-weight: 500;
+      cursor: pointer; white-space: nowrap;
+      transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* Mobile hamburger */
+    .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 8px; color: #fff; }
+
+    /* ─────────────────────────────
+       HERO
+    ───────────────────────────── */
+    .hero {
+      position: relative; z-index: 1;
+      max-width: 1200px; margin: 0 auto;
+      padding: 100px 32px 80px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border-radius: 20px;
+      background: rgba(0,200,180,0.1);
+      border: 0.5px solid rgba(0,200,180,0.35);
+      font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--teal-light); margin-bottom: 24px;
+    }
+    .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--teal-light); animation: pulse 2s infinite; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 800; line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .hero h1 .accent { color: var(--purple-light); }
+
+    .hero-desc {
+      font-size: 16px; color: var(--text-muted);
+      line-height: 1.75; max-width: 440px; margin-bottom: 36px;
+    }
+
+    .btn-group { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 52px; }
+
+    .btn-primary {
+      padding: 13px 28px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--purple), #5a35e0);
+      border: none; color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px; font-weight: 500;
+      cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(120,80,255,0.35); }
+
+    .btn-ghost {
+      padding: 13px 28px; border-radius: 12px;
+      background: rgba(255,255,255,0.07);
+      border: 0.5px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.85);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.12); }
+
+    .hero-stats { display: flex; gap: 32px; }
+    .stat-item { }
+    .stat-num { font-size: 28px; font-weight: 700; color: #fff; }
+    .stat-num span { color: var(--purple-light); font-size: 18px; }
+    .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+    /* Hero right: floating cards */
+    .hero-visual { position: relative; height: 380px; }
+
+    .hero-card-main {
+      position: absolute; top: 0; right: 0;
+      width: 280px;
+    }
+    .hero-card-main .glass { padding: 24px; }
+    .school-img-placeholder {
+      width: 100%; height: 140px; border-radius: 10px;
+      background: linear-gradient(135deg, rgba(120,80,255,0.3), rgba(0,200,180,0.2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 40px; margin-bottom: 16px;
+    }
+    .card-tag { font-size: 11px; color: var(--teal-light); font-weight: 500; margin-bottom: 4px; }
+    .card-title { font-size: 14px; font-weight: 500; }
+
+    .hero-card-mini {
+      position: absolute; bottom: 30px; left: 0;
+      width: 220px;
+    }
+    .mini-card-inner { padding: 16px; display: flex; gap: 12px; align-items: center; }
+    .mini-icon {
+      width: 40px; height: 40px; flex-shrink: 0;
+      border-radius: 10px;
+      background: rgba(120,80,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; color: var(--purple-light);
+    }
+    .mini-label { font-size: 11px; color: var(--text-muted); }
+    .mini-val { font-size: 15px; font-weight: 600; }
+
+    .hero-card-accent {
+      position: absolute; top: 160px; left: 20px;
+      width: 180px;
+    }
+    .accent-inner { padding: 14px 16px; }
+    .acc-row { display: flex; align-items: center; gap: 8px; }
+    .acc-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal-light); }
+    .acc-text { font-size: 12px; color: var(--text-muted); }
+    .acc-big { font-size: 20px; font-weight: 700; margin-top: 4px; }
+
+    /* ─────────────────────────────
+       FEATURES
+    ───────────────────────────── */
+    .features {
+      position: relative; z-index: 1;
+      max-width: 1200px; margin: 0 auto;
+      padding: 80px 32px;
+    }
+    .section-label {
+      font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--purple-light); font-weight: 500; margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4vw, 40px); font-weight: 700;
+      margin-bottom: 16px; line-height: 1.25;
+    }
+    .section-desc {
+      font-size: 15px; color: var(--text-muted); max-width: 500px; line-height: 1.7;
+      margin-bottom: 52px;
+    }
+
+    .features-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    }
+
+    .feature-card { padding: 28px; transition: border-color 0.25s; cursor: default; }
+    .feature-card:hover { border-color: rgba(120,80,255,0.35); }
+
+    .feat-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; margin-bottom: 18px;
+    }
+    .fi-purple { background: rgba(120,80,255,0.18); color: var(--purple-light); }
+    .fi-teal   { background: rgba(0,200,180,0.15); color: var(--teal-light); }
+    .fi-amber  { background: rgba(255,183,0,0.15); color: var(--amber); }
+    .fi-pink   { background: rgba(255,80,150,0.15); color: #ff80b4; }
+    .fi-blue   { background: rgba(60,120,255,0.15); color: #80a8ff; }
+    .fi-green  { background: rgba(0,200,80,0.15); color: #44e090; }
+
+    .feat-title { font-size: 15px; font-weight: 500; margin-bottom: 8px; }
+    .feat-desc { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
+
+    /* ─────────────────────────────
+       NEWS
+    ───────────────────────────── */
+    .news-section {
+      position: relative; z-index: 1;
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 32px 80px;
+    }
+    .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px; }
+
+    .news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+    .news-card { overflow: hidden; }
+    .news-thumb {
+      width: 100%; height: 160px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px;
+      border-radius: 10px; margin-bottom: 16px;
+    }
+    .nt-1 { background: linear-gradient(135deg, rgba(120,80,255,0.3), rgba(0,200,180,0.2)); }
+    .nt-2 { background: linear-gradient(135deg, rgba(255,183,0,0.2), rgba(255,80,150,0.2)); }
+    .nt-3 { background: linear-gradient(135deg, rgba(60,120,255,0.2), rgba(0,200,180,0.15)); }
+    .news-card .glass { padding: 20px; }
+    .news-cat { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--teal-light); margin-bottom: 8px; }
+    .news-title { font-size: 14px; font-weight: 500; line-height: 1.5; margin-bottom: 12px; }
+    .news-meta { font-size: 11px; color: var(--text-dim); }
+
+    .link-btn {
+      font-size: 13px; color: var(--purple-light); text-decoration: none;
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .link-btn:hover { color: #fff; }
+
+    /* ─────────────────────────────
+       CTA BANNER
+    ───────────────────────────── */
+    .cta-banner {
+      position: relative; z-index: 1;
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 32px 80px;
+    }
+    .cta-inner {
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(120,80,255,0.25), rgba(0,200,180,0.15));
+      border: 0.5px solid rgba(120,80,255,0.35);
+      backdrop-filter: blur(20px);
+      padding: 56px 48px;
+      text-align: center;
+    }
+    .cta-inner h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(26px, 4vw, 38px); font-weight: 700;
+      margin-bottom: 14px;
+    }
+    .cta-inner p { font-size: 15px; color: var(--text-muted); margin-bottom: 32px; }
+
+    /* ─────────────────────────────
+       FOOTER
+    ───────────────────────────── */
+    footer {
+      position: relative; z-index: 1;
+      border-top: 0.5px solid var(--glass-border);
+      background: rgba(7,9,30,0.6);
+    }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 40px 32px 32px;
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px;
+    }
+    .footer-brand p { font-size: 13px; color: var(--text-muted); line-height: 1.7; margin: 12px 0 16px; max-width: 240px; }
+    .footer-socials { display: flex; gap: 10px; }
+    .social-btn {
+      width: 34px; height: 34px; border-radius: 8px;
+      background: var(--glass-bg); border: 0.5px solid var(--glass-border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted); font-size: 16px; cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+      text-decoration: none;
+    }
+    .social-btn:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
+
+    .footer-col h4 { font-size: 13px; font-weight: 500; margin-bottom: 14px; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .footer-col a:hover { color: #fff; }
+
+    .footer-bottom {
+      max-width: 1200px; margin: 0 auto;
+      padding: 20px 32px;
+      border-top: 0.5px solid var(--glass-border);
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; color: var(--text-dim);
+    }
+
+    /* ─────────────────────────────
+       RESPONSIVE
+    ───────────────────────────── */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; gap: 48px; padding: 60px 24px; }
+      .hero-visual { display: none; }
+      .features-grid { grid-template-columns: repeat(2, 1fr); }
+      .news-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+    }
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .features-grid { grid-template-columns: 1fr; }
+      .news-grid { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr; }
+      .section-header { flex-direction: column; gap: 12px; align-items: flex-start; }
+      .cta-inner { padding: 36px 24px; }
+    }
+
+    /* Nav mobile open */
+    nav.open .nav-links {
+      display: flex; flex-direction: column;
+      position: absolute; top: 68px; left: 0; right: 0;
+      background: rgba(7,9,30,0.97);
+      padding: 16px 24px;
+      border-bottom: 0.5px solid var(--glass-border);
+      z-index: 99;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background -->
+  <div class="bg-scene" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- ── HEADER ── -->
+  <header>
+    <nav id="main-nav">
+      <a href="#" class="logo" aria-label="Нүүр хуудас">
+        <div class="logo-mark">Э</div>
+        <div>
+          <div class="logo-name">Эрдэм Сургууль</div>
+          <div class="logo-tagline">Улаанбаатар</div>
+        </div>
+      </a>
+
+      <ul class="nav-links" id="nav-links" role="list">
+        <li><a href="#" class="active">Нүүр</a></li>
+        <li><a href="#features">Сургалт</a></li>
+        <li><a href="#">Багш нар</a></li>
+        <li><a href="#news">Мэдээ</a></li>
+        <li><a href="#">Холбоо барих</a></li>
+      </ul>
+
+      <button class="nav-cta">Элсэлтэд бүртгүүлэх</button>
+
+      <button class="hamburger" id="hamburger" aria-label="Цэс" aria-expanded="false">
+        <i class="ti ti-menu-2" style="font-size:24px"></i>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ── HERO ── -->
+  <section class="hero" aria-label="Танилцуулга">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        2024–2025 хичээлийн жил
+      </div>
+
+      <h1>Ирээдүйг <span class="accent">чанартай</span><br>боловсролоор бүтээе</h1>
+
+      <p class="hero-desc">
+        Орчин үеийн технологи, туршлагатай багш нартай хамт таны хүүхдийн авъяас, ирээдүйг хамтдаа хөгжүүлье.
+      </p>
+
+      <div class="btn-group">
+        <button class="btn-primary">Элсэлтэд бүртгүүлэх &rarr;</button>
+        <button class="btn-ghost">Дэлгэрэнгүй үзэх</button>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-num">1,200<span>+</span></div>
+          <div class="stat-label">Нийт сурагч</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">85<span>+</span></div>
+          <div class="stat-label">Мэргэшсэн багш</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">98<span>%</span></div>
+          <div class="stat-label">Төгсөлтийн амжилт</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating visual cards (декоратив) -->
+    <div class="hero-visual" aria-hidden="true">
+      <div class="hero-card-main">
+        <div class="glass">
+          <div class="school-img-placeholder">🏫</div>
+          <div class="card-tag">Шилдэг сургалтын орчин</div>
+          <div class="card-title">Орчин үеийн лаборатори болон хичээлийн байр</div>
+        </div>
+      </div>
+
+      <div class="hero-card-mini">
+        <div class="glass">
+          <div class="mini-card-inner">
+            <div class="mini-icon"><i class="ti ti-trophy" aria-hidden="true"></i></div>
+            <div>
+              <div class="mini-label">Олимпиадын амжилт</div>
+              <div class="mini-val">47 медаль</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-card-accent">
+        <div class="glass">
+          <div class="accent-inner">
+            <div class="acc-row">
+              <div class="acc-dot"></div>
+              <div class="acc-text">Орлоо / Элсэлт</div>
+            </div>
+            <div class="acc-big">2025</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FEATURES ── -->
+  <section class="features" id="features" aria-labelledby="feat-heading">
+    <div class="section-label">Манай давуу тал</div>
+    <h2 class="section-title" id="feat-heading">Яагаад Эрдэм сургуулийг<br>сонгох вэ?</h2>
+    <p class="section-desc">Таны хүүхдэд хамгийн сайн боловсролын орчин, найрсаг хамт олон, дэвшилтэт технологийг санал болгоно.</p>
+
+    <div class="features-grid">
+      <div class="glass feature-card">
+        <div class="feat-icon fi-purple"><i class="ti ti-book-2" aria-hidden="true"></i></div>
+        <div class="feat-title">STEM Сургалт</div>
+        <div class="feat-desc">Шинжлэх ухаан, технологи, инженерчлэл, математикийн цогц хөтөлбөр.</div>
+      </div>
+      <div class="glass feature-card">
+        <div class="feat-icon fi-teal"><i class="ti ti-palette" aria-hidden="true"></i></div>
+        <div class="feat-title">Уран бүтээл</div>
+        <div class="feat-desc">Дүрслэх урлаг, хөгжим, театр — бүтээлч сэтгэлгээг хөгжүүлнэ.</div>
+      </div>
+      <div class="glass feature-card">
+        <div class="feat-icon fi-amber"><i class="ti ti-trophy" aria-hidden="true"></i></div>
+        <div class="feat-title">Олимпиадын бэлтгэл</div>
+        <div class="feat-desc">Улс болон олон улсын тэмцээнд амжилттай оролцох бэлтгэл.</div>
+      </div>
+      <div class="glass feature-card">
+        <div class="feat-icon fi-pink"><i class="ti ti-heart" aria-hidden="true"></i></div>
+        <div class="feat-title">Хүүхдэд ээлтэй</div>
+        <div class="feat-desc">Хүүхэд бүрийн онцлогт тохирсон, дэмжлэгтэй хичээлийн орчин.</div>
+      </div>
+      <div class="glass feature-card">
+        <div class="feat-icon fi-blue"><i class="ti ti-device-laptop" aria-hidden="true"></i></div>
+        <div class="feat-title">Дижитал боловсрол</div>
+        <div class="feat-desc">Код бичих, хиймэл оюун ухаан — 21-р зуунд зайлшгүй мэдлэг.</div>
+      </div>
+      <div class="glass feature-card">
+        <div class="feat-icon fi-green"><i class="ti ti-leaf" aria-hidden="true"></i></div>
+        <div class="feat-title">Эрүүл орчин</div>
+        <div class="feat-desc">Цэвэр агаар, тохилог байр — биеийн болон оюун ухааны эрүүл мэнд.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── NEWS ── -->
+  <section class="news-section" id="news" aria-labelledby="news-heading">
+    <div class="section-header">
+      <div>
+        <div class="section-label">Сүүлийн үеийн</div>
+        <h2 class="section-title" id="news-heading">Мэдээ, мэдээлэл</h2>
+      </div>
+      <a href="#" class="link-btn">Бүгдийг үзэх <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
+    </div>
+
+    <div class="news-grid">
+      <article class="glass news-card">
+        <div class="news-thumb nt-1">🏆</div>
+        <div class="glass" style="background: transparent; border: none; padding: 4px 20px 20px;">
+          <div class="news-cat">Амжилт</div>
+          <div class="news-title">Математикийн олимпиадад 3 алтан медаль хүртлээ</div>
+          <div class="news-meta">2025 оны 3-р сарын 15</div>
+        </div>
+      </article>
+
+      <article class="glass news-card">
+        <div class="news-thumb nt-2">🎨</div>
+        <div class="glass" style="background: transparent; border: none; padding: 4px 20px 20px;">
+          <div class="news-cat">Арга хэмжээ</div>
+          <div class="news-title">Эрдэм сургуулийн жил дүгнэх уран бүтээлийн тоглолт</div>
+          <div class="news-meta">2025 оны 3-р сарын 8</div>
+        </div>
+      </article>
+
+      <article class="glass news-card">
+        <div class="news-thumb nt-3">💻</div>
+        <div class="glass" style="background: transparent; border: none; padding: 4px 20px 20px;">
+          <div class="news-cat">Шинэ хөтөлбөр</div>
+          <div class="news-title">Хиймэл оюун ухааны лаборатори нээлтэй боллоо</div>
+          <div class="news-meta">2025 оны 2-р сарын 28</div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <section class="cta-banner" aria-label="Элсэлтийн мэдээлэл">
+    <div class="cta-inner">
+      <h2>2025–2026 оны элсэлт эхэллээ</h2>
+      <p>Таны хүүхдийн ирээдүйд хамтдаа хөрөнгө оруулацгаая. Бүртгэл хязгаарлагдмал!</p>
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <button class="btn-primary">Одоо бүртгүүлэх &rarr;</button>
+        <button class="btn-ghost">Асуух зүйл байна уу?</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="#" class="logo" aria-label="Нүүр хуудас">
+          <div class="logo-mark">Э</div>
+          <div>
+            <div class="logo-name">Эрдэм Сургууль</div>
+            <div class="logo-tagline">Улаанбаатар</div>
+          </div>
+        </a>
+        <p>Чанартай боловсрол — гэрэлт ирээдүйн суурь. Таны хүүхдийн амжилт бол манай зорилго.</p>
+        <div class="footer-socials">
+          <a href="#" class="social-btn" aria-label="Facebook"><i class="ti ti-brand-facebook" aria-hidden="true"></i></a>
+          <a href="#" class="social-btn" aria-label="Instagram"><i class="ti ti-brand-instagram" aria-hidden="true"></i></a>
+          <a href="#" class="social-btn" aria-label="YouTube"><i class="ti ti-brand-youtube" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Сургалт</h4>
+        <ul>
+          <li><a href="#">Бага ангийн анги</a></li>
+          <li><a href="#">Дунд ангийн анги</a></li>
+          <li><a href="#">Ахлах анги</a></li>
+          <li><a href="#">Нэмэлт хичээл</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Сургууль</h4>
+        <ul>
+          <li><a href="#">Багш нар</a></li>
+          <li><a href="#">Дотуур байр</a></li>
+          <li><a href="#">Хоолны газар</a></li>
+          <li><a href="#">Клуб, дугуйлан</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Холбоо барих</h4>
+        <ul>
+          <li><a href="#">📍 Хан-Уул дүүрэг, УБ</a></li>
+          <li><a href="tel:+97611000000">📞 +976 11-00-00-00</a></li>
+          <li><a href="mailto:info@erdem.edu.mn">✉️ info@erdem.edu.mn</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>&copy; 2025 Эрдэм Сургууль. Бүх эрх хуулиар хамгаалагдсан.</span>
+      <span>Нууцлалын бодлого &nbsp;·&nbsp; Ашиглалтын нөхцөл</span>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile nav toggle
+    const ham = document.getElementById('hamburger');
+    const nav = document.getElementById('main-nav');
+    ham.addEventListener('click', () => {
+      const isOpen = nav.classList.toggle('open');
+      ham.setAttribute('aria-expanded', isOpen);
+    });
+
+    // Active nav link on scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navAs = document.querySelectorAll('.nav-links a');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          navAs.forEach(a => a.classList.remove('active'));
+          const link = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+          if (link) link.classList.add('active');
+        }
+      });
+    }, { threshold: 0.4 });
+    sections.forEach(s => observer.observe(s));
+  </script>
+</body>
+</html>
